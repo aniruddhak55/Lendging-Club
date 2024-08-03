@@ -25,9 +25,15 @@ pipeline {
         }
         stage('Deploy') {
             steps {
+                sh '''
+                    # Create the directory on the remote server if it does not exist
+                    sshpass -p $LABS_PSW ssh -o StrictHostKeyChecking=no $LABS_USR@g02.itversity.com \
+                    "mkdir -p /home/itv012760/lendingclub"
 
-				sh 'sshpass-p $LABS_PSW scp-o StrictHostKeyChecking=no-r .
-                $LABS_USR@g02.itversity.com:/home/itv012760/lendingclub'
+                    # Deploy the zip file using SCP
+                    sshpass -p $LABS_PSW scp -o StrictHostKeyChecking=no -r lendingclub.zip \
+                    $LABS_USR@g02.itversity.com:/home/itv012760/lendingclub
+                '''
             }
         }
     }
