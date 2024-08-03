@@ -1,14 +1,25 @@
-pipeline {
+\pipeline {
     agent any
     environment {
         LABS = credentials('labcreds')
     }
     stages {
+        stage('Setup Python Environment') {
+            steps {
+                sh '''
+                    python3 -m venv venv
+                    source venv/bin/activate
+                    pip install pipenv
+                '''
+            }
+        }
         stage('Build') {
             steps {
-                sh 'pip3 install --user pipenv'
-                sh '/bitnami/jenkins/home/.local/bin/pipenv --rm || exit 0'
-                sh '/bitnami/jenkins/home/.local/bin/pipenv install'
+                sh '''
+                    source venv/bin/activate
+                    pipenv --rm || exit 0
+                    pipenv install
+                '''
             }
         }
         stage('Test') {
