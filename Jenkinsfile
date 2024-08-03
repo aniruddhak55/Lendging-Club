@@ -7,11 +7,9 @@ pipeline {
         stage('Setup Python Environment') {
             steps {
                 sh '''
-                    sudo apt update
-                    sudo apt install -y python3-venv
-                    python3 -m venv venv
-                    source venv/bin/activate
-                    pip install pipenv
+                    source myenv/bin/activate || exit 0
+                    pipenv --rm || exit 0
+                    pipenv install
                 '''
             }
         }
