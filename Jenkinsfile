@@ -1,4 +1,4 @@
-\pipeline {
+pipeline {
     agent any
     environment {
         LABS = credentials('labcreds')
