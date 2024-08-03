@@ -4,6 +4,11 @@ pipeline {
         LABS = credentials('labcreds')
     }
     stages {
+        stage('Setup') {
+            steps {
+                sh 'sudo apt-get update && sudo apt-get install -y python3-venv'
+            }
+        }
         stage('Build') {
             steps {
                 sh '''
@@ -17,9 +22,10 @@ pipeline {
         }
         stage('Test') {
             steps {
-
-                echo "test completed successful"
-                   
+                sh '''
+                    source myenv/bin/activate
+                    pipenv run pytest
+                '''
             }
         }
         stage('Package') {
@@ -34,7 +40,7 @@ pipeline {
             steps {
                 sh '''
                     source myenv/bin/activate
-                    sshpass -p $LABS_PSW scp -o StrictHostKeyChecking=no -r ./lendingclub.zip $LABS_USR@g02.itversity.com:/home/itv005857/lendingclub
+                    sshpass -p $LABS_PSW scp -o StrictHostKeyChecking=no -r ./lendingclub.zip $LABS_USR@g02.itversity.com:/home/itv012760/lendingclub
                 '''
             }
         }
