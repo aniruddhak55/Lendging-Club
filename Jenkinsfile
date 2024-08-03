@@ -23,7 +23,7 @@ pipeline {
         }
         stage('Deploy') {
             steps {
-                sh 'sshpass -p $LABS_PSW scp -o StrictHostKeyChecking=no -r ./lendingclub.zip $LABS_USR@g02.itversity.com:/home/itv012760/'
+                sh 'sshpass -p $LABS_PSW scp -o StrictHostKeyChecking=no -r ./lendingclub.zip $LABS_USR@g02.itversity.com:/home/itv012760/lendingclub'
             }
         }
     }
