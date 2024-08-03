@@ -4,19 +4,10 @@ pipeline {
         LABS = credentials('labcreds')
     }
     stages {
-        stage('Setup Python Environment') {
-            steps {
-                sh '''
-                    source myenv/bin/activate || exit 0
-                    pipenv --rm || exit 0
-                    pipenv install
-                '''
-            }
-        }
         stage('Build') {
             steps {
                 sh '''
-                    source venv/bin/activate
+                    source myenv/bin/activate || exit 0
                     pipenv --rm || exit 0
                     pipenv install
                 '''
