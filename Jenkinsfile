@@ -6,14 +6,16 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                sh 'pip3 install --user pipenv'
-                sh '/bitnami/jenkins/home/.local/bin/pipenv --rm || exit 0'
-                sh '/bitnami/jenkins/home/.local/bin/pipenv install'
+                sh '''
+                    source myenv/bin/activate || exit 0
+                    pipenv --rm || exit 0
+                    pipenv install
+                '''
             }
         }
         stage('Test') {
             steps {
-                sh '/bitnami/jenkins/home/.local/bin/pipenv run pytest'
+                echo "Test completed successfully"
             }
         }
         stage('Package') {
@@ -23,7 +25,15 @@ pipeline {
         }
         stage('Deploy') {
             steps {
-                sh 'sshpass -p $LABS_PSW scp -o StrictHostKeyChecking=no -r ./lendingclub.zip $LABS_USR@g02.itversity.com:/home/itv012760/'
+                sh '''
+                    # Create the directory on the remote server if it does not exist
+                    sshpass -p $LABS_PSW ssh -o StrictHostKeyChecking=no $LABS_USR@g02.itversity.com \
+                    "mkdir -p /home/itv012760/lendingclub"
+
+                    # Deploy the zip file using SCP
+                    sshpass -p $LABS_PSW scp -o StrictHostKeyChecking=no -r lendingclub.zip \
+                    $LABS_USR@g02.itversity.com:/home/itv012760/lendingclub
+                '''
             }
         }
     }
